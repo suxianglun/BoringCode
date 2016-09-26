@@ -8,3 +8,4 @@ The boring codes.
 |GetOne|ONE一个 爬虫|
 |sjtuelearning.py|sjtu elearning课件爬虫|
 |Renren|好友生日爬虫|
+|12306|火车票余票查询|
