@@ -16,9 +16,10 @@ Example:
     tickets beijing shanghai 2016-08-25
 """
 from docopt import docopt
-from parse_station import stations
 import requests
 from prettytable import PrettyTable
+from stations import stations
+from getPrice import get_price
 
 
 def colored(color, text):
@@ -51,9 +52,15 @@ class TrainCollection(object):
             return duration[1:]
         return duration
 
+    def formatPrint(self,valTop,valBot):
+        return '\n'.join([colored('nc',valTop),colored('green',valBot)])
     @property
     def trains(self):
+        global date
         for row in self.rows:
+            pricerow = ['','','','','','','','','']
+            # next line is very slow  comment it will be faster
+            pricerow = get_price(row['train_no'],row['from_station_no'],row['to_station_no'],row['seat_types'],date)
             train = [
                 # 车次
                 row['station_train_code'],
@@ -64,15 +71,15 @@ class TrainCollection(object):
                 # 历时
                 self._get_duration(row),
                 # 一等坐
-                row['zy_num'],
+                self.formatPrint(row['zy_num'], pricerow[2]),
                 # 二等坐
-                row['ze_num'],
+                self.formatPrint(row['ze_num'], pricerow[3]),
                 # 软卧
-                row['rw_num'],
-                # 软坐
-                row['yw_num'],
+                self.formatPrint(row['rw_num'], pricerow[5]),
+                # 硬卧
+                self.formatPrint(row['yw_num'], pricerow[6]),
                 # 硬坐
-                row['yz_num']
+                self.formatPrint(row['yz_num'], pricerow[8])
             ]
             yield train
 
@@ -93,11 +100,13 @@ def cli():
     arguments = docopt(__doc__)
     from_station = stations.get(arguments['<from>'])
     to_station = stations.get(arguments['<to>'])
+    global date
     date = arguments['<date>']
     # 构建URL
     url = 'https://kyfw.12306.cn/otn/lcxxcx/query?purpose_codes=ADULT&queryDate={}&from_station={}&to_station={}'.format(
         date, from_station, to_station
     )
+    print(url)
     r = requests.get(url, verify=False)
     rows = r.json()['data']['datas']
     #print(r.json())
