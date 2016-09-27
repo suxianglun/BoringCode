@@ -2,15 +2,10 @@
 """Train tickets query via command-line.
 
 Usage:
-    tickets [-gdtkz] <from> <to> <date>
+    tickets <from> <to> <date>
 
 Options:
     -h,--help   显示帮助菜单
-    -g          高铁
-    -d          动车
-    -t          特快
-    -k          快速
-    -z          直达
 
 Example:
     tickets beijing shanghai 2016-08-25
@@ -36,7 +31,7 @@ def colored(color, text):
 class TrainCollection(object):
 
     # 显示车次、出发/到达站、 出发/到达时间、历时、一等坐、二等坐、软卧、硬卧、硬座
-    header = 'train station time duration first second softsleep hardsleep hardsit'.split()
+    header = 'train station time duration first second softsleep hardsleep hardsit nosit'.split()
 
     def __init__(self, rows):
         self.rows = rows
@@ -79,7 +74,9 @@ class TrainCollection(object):
                 # 硬卧
                 self.formatPrint(row['yw_num'], pricerow[6]),
                 # 硬坐
-                self.formatPrint(row['yz_num'], pricerow[8])
+                self.formatPrint(row['yz_num'], pricerow[8]),
+                # 无坐
+                self.formatPrint(row['wz_num'], pricerow[9])
             ]
             yield train
 
@@ -106,7 +103,7 @@ def cli():
     url = 'https://kyfw.12306.cn/otn/lcxxcx/query?purpose_codes=ADULT&queryDate={}&from_station={}&to_station={}'.format(
         date, from_station, to_station
     )
-    print(url)
+    #print(url)
     r = requests.get(url, verify=False)
     rows = r.json()['data']['datas']
     #print(r.json())
