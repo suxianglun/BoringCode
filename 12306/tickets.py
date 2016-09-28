@@ -53,7 +53,10 @@ class TrainCollection(object):
     def trains(self):
         global date
         for row in self.rows:
-            pricerow = ['','','','','','','','','']
+            #忽略 暂停发售的列车
+            if row['controlled_train_flag'] == "1":
+                continue
+            pricerow = ['','','','','','','','','','']
             # next line is very slow  comment it will be faster
             pricerow = get_price(row['train_no'],row['from_station_no'],row['to_station_no'],row['seat_types'],date)
             train = [
