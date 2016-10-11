@@ -39,7 +39,8 @@ def getBookById(bookid):
     except:
         getData = rawdata.decode('utf-8')
     jsondata = json.loads(getData)
-    
+    if len(jsondata["author"])==0:
+        jsondata["author"]=[""]
     return [jsondata["image"],jsondata["title"],jsondata["author"][0],jsondata["isbn13"]]
 
 def saveBookInfo(data):
