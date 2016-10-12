@@ -2,6 +2,17 @@ from getBookInfo import getBookById
 from getBookInfo import saveImage 
 from getBookInfo import resultfile 
 
+
+"""
+a = [];
+JSON.stringify(a.sort(function(v1,v2){
+if(v1['author'].localeCompare(v2['author'])!=0)
+return v1['author'].localeCompare(v2['author']);
+else return v1['title'].localeCompare(v2['title'])
+}));
+
+"""
+
 import threading
 import sys
 import os
